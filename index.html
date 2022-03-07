@@ -1,0 +1,190 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <title>Assignement 1 - Kristopher Yount</title>
+</head>
+
+<body>
+
+    <h1>Assignment 1 - Twitter Application</h1>
+
+    <form>
+        <big> <!-- Label and button meant for display of given task -->
+            <label>Display recorded Tweets: </label>
+            <button name = "butGetTweets" onclick = funcTweetDisplay() value = "OK" type = "button">Get Tweets</button>
+        </big>
+
+        <script>
+            function funcTweetDisplay() { // Function to call for the display of all Tweets
+                const xhr = new XMLHttpRequest(); // Creating a new Http request
+                xhr.open('GET', '/tweets/tweetDisplay') // Starting that request
+                
+                xhr.onload = () => { // Code performed after response from server
+                    let list = document.getElementById("myList"); // Creates a list that will be displayed using <ul>
+                    const data = JSON.parse(xhr.response) // Parses the display response
+                    console.log(data) // Logs the data
+                    
+                    list.innerHTML = data.map(i => `<li>${i}</li>`).join(''); // Compiles the data in the list to be displayed
+                }
+
+                xhr.send(); // Completed request
+            }
+        </script>
+    </form>
+
+    <br>
+
+    <form>
+        <big> <!-- Label and button meant for display of given task -->
+            <label>Display User ID's: </label>
+            <button name="butGetID" onclick=funcGetID() value = "OK" type = "button">Get ID's</button>
+        </big>
+
+        <script>
+            function funcGetID() {
+                const xhr = new XMLHttpRequest(); // Creating a new Http request
+                xhr.open('GET', '/tweets/userIDs') // Starting that request
+
+                xhr.onload = () => { // Code performed after response from server
+                    let list = document.getElementById("myList"); // Creates a list that will be displayed using <ul>
+                    const data = JSON.parse(xhr.response)
+                    console.log(data)
+                    
+                    list.innerHTML = data.map(i => `<li>${i}</li>`).join(''); // Compiles the data in the list to be displayed
+                }
+
+                xhr.send(); // Completed request
+            }
+        </script>
+    </form>
+
+    <br>
+    
+    <form>
+        <big> <!-- Label, textbox, and button meant for display of given task -->
+            <label>Please enter ID to perform Tweet lookup:  </label>
+            <input type="text" id="tweetLookup"/>
+            <button name="butTweetLookup" onclick=funcTweetLookup() type="button">Search</button>
+        </big>
+
+        <script>
+            function funcTweetLookup() {
+                const xhr = new XMLHttpRequest(); // Creating a new Http request
+                xhr.open('GET', `/tweets/lookup/${tweetLookup.value}`) // Starting that request with variable URL inclusion
+
+                xhr.onload = () => { // Code performed after response from server
+                    let list = document.getElementById("myList"); // Creates a list that will be displayed using <ul>
+                    const data = JSON.parse(xhr.response)
+                    console.log("data")
+                    
+                    list.innerHTML = data.map(i => `<li>${i}</li>`).join(''); // Compiles the data in the list to be displayed
+                }
+
+                xhr.send(); // Completed request
+            }
+        </script>
+    </form>
+
+    <br>
+
+    <form>
+        <big> <!-- Label, textbox, and button meant for display of given task -->
+            <label>Lets post something! </label><input type="text" id="postID" placeholder="Tweet ID"/><br>
+            <textarea id="postText" rows="4" cols="50" placeholder = "What's happening?"></textarea><br>
+            <button name="butPostTweet" onclick=funcPostTweet() type="button" value="OK">Submit</button>
+        </big>
+
+        <script>
+            function funcPostTweet() {
+                const xhr = new XMLHttpRequest(); // Creating a new Http request
+                xhr.open('POST', "/tweets/postTweet") // Starting that request
+                xhr.setRequestHeader('Content-type', 'application/json');
+                let list = document.getElementById("myList"); // Creates a list that will be displayed using <ul>
+                xhr.onload = () => { // Code performed after response from server
+                    let list = document.getElementById("myList");
+                    const data = JSON.parse(xhr.response)
+                    console.log("data")
+                    
+                    list.innerHTML = data.map(i => `<li>${i}</li>`).join(''); // Compiles the data in the list to be displayed
+                    console.log(list)
+                }
+                xhr.send(JSON.stringify({
+                    firstVar: postID.value,
+                    secondVar: postText.value
+                })); // Completed request with payload variables
+            }
+        </script>
+    </form>
+
+    <br>
+
+    <form>
+        <big> <!-- Label, textbox, and button meant for display of given task -->
+            <label>Change your Username: </label><br>
+            <label>Old: </label><input type="text" id="oldUser"/>
+            <label> New: </label><input type="text" id="newUser"/><br>
+            <button name="butChangeUser" onclick=funcChangeUser() type="button" value="OK">Submit</button>
+        </big>
+
+        <script>
+            function funcChangeUser() {
+                const xhr = new XMLHttpRequest(); // Creating a new Http request
+                xhr.open('PUT', "/tweets/rename") // Starting that request
+                xhr.setRequestHeader('Content-type', 'application/json');
+                let list = document.getElementById("myList"); // Creates a list that will be displayed using <ul>
+                xhr.onload = () => { // Code performed after response from server
+                    let list = document.getElementById("myList");
+                    const data = JSON.parse(xhr.response)
+                    console.log("data")
+                    
+                    list.innerHTML = data.map(i => `<li>${i}</li>`).join(''); // Compiles the data in the list to be displayed
+                    console.log(list)
+                }
+                xhr.send(JSON.stringify({
+                    oldVar: oldUser.value,
+                    newVar: newUser.value
+                })); // Completed request with payload variables
+            }
+        </script>
+    </form>
+
+    <br>
+
+    <form>
+        <big> <!-- Label, textbox, and button meant for display of given task -->
+            <label>Pesky old Tweet? Lets delete it... </label><br>
+            <label>Tweet ID: </label>
+            <input type="text" id="deleteTweet"/><br>
+            <button name="butDeleteTweet" onclick=funcDeleteTweet() type="button" value="OK">Delete</button>
+        </big>
+
+        <script>
+            function funcDeleteTweet() {
+                const xhr = new XMLHttpRequest(); // Creating a new Http request
+                xhr.open('DELETE', "/tweets/delete") // Starting that request
+                xhr.setRequestHeader('Content-type', 'application/json');
+                let list = document.getElementById("myList"); // Creates a list that will be displayed using <ul>
+                xhr.onload = () => { // Code performed after response from server
+                    let list = document.getElementById("myList");
+                    const data = JSON.parse(xhr.response)
+                    console.log("data")
+                    
+                    list.innerHTML = data.map(i => `<li>${i}</li>`).join(''); // Compiles the data in the list to be displayed
+                    console.log(list)
+                }
+                xhr.send(JSON.stringify({
+                    oldVar: deleteTweet.value
+                })); // Completed request with payload variable
+            }
+        </script>
+    </form>
+    
+    <br><br>
+    <ul id="myList" style="list-style: none"></ul>
+    <ul id="myList" style="list-style: none"></ul>
+	
+</body>
+
+</html>
